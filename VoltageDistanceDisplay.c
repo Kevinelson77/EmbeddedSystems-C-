@@ -18,35 +18,35 @@ void Send_A_String(char *StringOfCharacters);
 
 int main (void) {
     uint16_t result;
-		float voltage, distance;
-		char Voltage_Buffer[18], Distance_Buffer[18];
-		Port_init();
-		LCD_init();
+    float voltage, distance;
+    char Voltage_Buffer[18], Distance_Buffer[18];
+    Port_init();
+    LCD_init();
 
     while (1) {
-				ADC1->CR2 |= 0x40000000;        															// start a conversion
-				while(!(ADC1->SR & 2)) {}       															// wait for conv complete
-				result = ADC1->DR;              															// read conversion result
-				voltage = result *(3.3/4095.0);  															// convert ADC output to voltage
-				distance = (-94.74*voltage)+308;															// convert to angle the potentiometer has travelled
-				sprintf(Voltage_Buffer, "Voltage: %.2f V", voltage);		
-				Send_A_String(Voltage_Buffer);																// Display Voltage
-				LCD_command(0xC0);
-				sprintf(Distance_Buffer, "Distance: %.1f\337", distance);
-				Send_A_String(Distance_Buffer);																// Display angle
-				delayMs(500);
-				LCD_command(0x02);
-		}
+	ADC1->CR2 |= 0x40000000;        				// start a conversion
+	while(!(ADC1->SR & 2)) {}       				// wait for conv complete
+	result = ADC1->DR;              				// read conversion result
+	voltage = result *(3.3/4095.0);  				// convert ADC output to voltage
+	distance = (-94.74*voltage)+308;				// convert to angle the potentiometer has travelled
+	sprintf(Voltage_Buffer, "Voltage: %.2f V", voltage);		
+	Send_A_String(Voltage_Buffer);					// Display Voltage
+	LCD_command(0xC0);
+	sprintf(Distance_Buffer, "Distance: %.1f\337", distance);
+	Send_A_String(Distance_Buffer);					// Display angle
+	delayMs(500);
+	LCD_command(0x02);
+    }
 }
 
 // Port Initializations for LCD. PA5-R/S, PA6-R/W, PA7-EN, PB0-PB7 for D0-D7, respectively.
 void Port_init(void) {
-		//Enable Clocks
-		RCC->AHB1ENR = 3;	            	// enable GPIOA/B clocks
+    //Enable Clocks
+    RCC->AHB1ENR = 3;	            	// enable GPIOA/B clocks
 		
-		// Enable Modes
-		GPIOA->MODER = 0;    						// clear pin mode
-		GPIOA->MODER = 0x5555555C;    	// set pins output mode, PA1 to analog
+    // Enable Modes
+    GPIOA->MODER = 0;    						// clear pin mode
+    GPIOA->MODER = 0x5555555C;    	// set pins output mode, PA1 to analog
     GPIOA->BSRR  = 0x00C00000;      // turn off EN and R/W
     GPIOB->MODER = 0;    						// clear pin mode
     GPIOB->MODER = 0x55555555;    	// set pins output mode
@@ -57,7 +57,7 @@ void Port_init(void) {
     ADC1->SQR3 = 1;                 // conversion sequence starts at ch 1
     ADC1->SQR1 = 0;                 // conversion sequence length 1
     ADC1->CR2 |= 1;                 // enable ADC1
-		ADC1->SMPR2 = 0xFFFFFFFF;				// set sample rate at max # of cycles
+    ADC1->SMPR2 = 0xFFFFFFFF;	    // set sample rate at max # of cycles
 }
 
 // initialize port pins then initialize LCD controller
@@ -83,7 +83,7 @@ void LCD_command(unsigned char command) {
     delayMs(0);
     GPIOA->BSRR = EN << 16;         // clear E
     if (command < 4)
-        delayMs(2);         				// command 1 and 2 needs up to 1.64ms
+        delayMs(2);         	    // command 1 and 2 needs up to 1.64ms
     else
         delayMs(1);         				
 }
@@ -99,7 +99,7 @@ void LCD_data(char datawrite) {
     delayMs(1);
 }
 
-// Sending a String of Characters
+// Sending a String of Characters to LCD
 void Send_A_String(char *StringOfCharacters){
 	while(*StringOfCharacters > 0){
 		LCD_data(*StringOfCharacters++);
