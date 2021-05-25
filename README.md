@@ -1,4 +1,4 @@
-# EmbeddedSystems-C-
+# Voltage-Distance-Display
 Embedded Systems Projects done in C on an STM32F446RE Nucleo Board
 
 Project 1: A voltage & distance display. A 10k potetiometer is hooked up to PA1 on the board and has the on board ADC enabled. 
